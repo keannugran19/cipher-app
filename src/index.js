@@ -45,6 +45,7 @@ app.get('/vigenere', (req, res) => {
 
 app.post('/signup', async (req, res) => {
     const data = {
+        name: req.body.name,
         username: req.body.username,
         password: req.body.password
     }
@@ -52,26 +53,65 @@ app.post('/signup', async (req, res) => {
     await collection.insertMany([data])
 
     res.render('login')
-
+    res.render('home.hbs', { name: data.name })
 })
+
+const loginAttempts = {};
 
 app.post('/login', async (req, res) => {
-
     try {
-        const check = await collection.findOne({ username: req.body.username })
+        const username = req.body.username;
+        const password = req.body.password;
+        const check = await collection.findOne({ username: username });
 
-        if (check.password === req.body.password) {
-            res.render('home')
-        } else {
-            res.send('wrong password')
+        if (!check) {
+            // User not found
+            res.send('Account not found!');
+            return;
         }
-    } catch {
 
-        res.send('Account not found!')
+        if (check.password === password) {
+            // Successful login, reset login attempts
+            loginAttempts[username] = 0;
+            res.render('home');
+        } else {
+            // Wrong password
+            if (loginAttempts[username]) {
+                loginAttempts[username]++;
+            } else {
+                loginAttempts[username] = 1;
+            }
 
+            if (loginAttempts[username] >= 3) {
+                // Block the user after 3 failed attempts
+                res.send('Account blocked due to too many login attempts.');
+            } else {
+                res.send(`Wrong password. ${3 - loginAttempts[username]} attempts remaining.`);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
     }
+});
 
-})
+// app.post('/login', async (req, res) => {
+
+//     try {
+//         const check = await collection.findOne({ username: req.body.username })
+
+//         if (check.password === req.body.password) {
+//             res.render('home')
+//         } else {
+//             res.send('wrong password')
+//         }
+//     } catch {
+
+//         res.send('Account not found!')
+
+//     }
+
+// })
 
 app.listen(3000, () => {
     console.log('port connected');
