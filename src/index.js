@@ -5,7 +5,7 @@ const hbs = require('hbs')
 const collection = require('./mongodb')
 
 // CSS
-app.use(express.static('../public'));
+app.use(express.static('public'));
 // CSS
 
 const templatePath = path.join(__dirname, '../templates')
@@ -25,6 +25,22 @@ app.get('/login', (req, res) => {
 
 app.get('/signup', (req, res) => {
     res.render('signup')
+})
+
+app.get('/home', (req, res) => {
+    res.render('home')
+})
+
+app.get('/atbash', (req, res) => {
+    res.render('atbash')
+})
+
+app.get('/caesar', (req, res) => {
+    res.render('caesar')
+})
+
+app.get('/vigenere', (req, res) => {
+    res.render('vigenere')
 })
 
 app.post('/signup', async (req, res) => {

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cipher App | Vigenere</title>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+
+<body>
+    {{!-- Navbar --}}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary p-4">
+        <div class="container-fluid">
+            <a class="navbar-brand active" href="#">Cipher App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Select Type of Cipher
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/atbash">Atbash Cipher</a></li>
+                            <li><a class="dropdown-item" href="/caesar">Caesar Cipher</a></li>
+                            <li><a class="dropdown-item" href="/vigenere">Vigenere Cipher</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {{!-- End of Navbar --}}
+    <main>
+        <div class="container mt-5">
+            <h1>Vigenère Cipher</h1>
+            <div class="row">
+                <div class="col-6">
+                    <div>
+                        <label for="textarea1">Enter your text here:</label>
+                    </div>
+                    <textarea name="textarea1" class="textarea" id="textarea1"></textarea>
+                    <label for="keyword">Keyword: </label>
+                    <input type="text" class="keyword" id="keyword" name="keyword">
+                    <button class="btn btn-primary" type="button" id="encryptBtn"
+                        onclick="vigenere('encrypt')">Encrypt</button>
+                    <button class="btn btn-secondary" type="button" id="decryptBtn"
+                        onclick="vigenere('decrypt')">Decrypt</button>
+                </div>
+                <div class="col-6">
+                    <div>
+                        <label for="textarea2">Result:</label>
+                    </div>
+                    <textarea name="textarea2" class="textarea" id="textarea2"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function vigenere(action) {
+                const textarea1 = document.getElementById('textarea1');
+                const textarea2 = document.getElementById('textarea2');
+                const inputText = textarea1.value;
+                const keyword = document.getElementById('keyword').value.toUpperCase();
+
+                if (!/^[A-Z]+$/.test(keyword)) {
+                    alert('Keyword must contain only uppercase letters.');
+                    return;
+                }
+
+                let resultText = '';
+                let keywordIndex = 0;
+
+                for (let i = 0; i < inputText.length; i++) {
+                    const char = inputText[i];
+
+                    if (/[A-Z]/.test(char)) {
+                        const isLowerCase = char === char.toLowerCase();
+                        const baseCharCode = isLowerCase ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+                        const shift = keyword.charCodeAt(keywordIndex % keyword.length) - 'A'.charCodeAt(0);
+
+                        // Perform encryption or decryption based on the action parameter
+                        let shiftedCharCode;
+                        if (action === 'encrypt') {
+                            shiftedCharCode = baseCharCode + (char.charCodeAt(0) - baseCharCode + shift) % 26;
+                        } else {
+                            shiftedCharCode = baseCharCode + (char.charCodeAt(0) - baseCharCode - shift + 26) % 26;
+                        }
+
+                        resultText += String.fromCharCode(shiftedCharCode);
+                        keywordIndex++;
+                    } else {
+                        resultText += char;
+                    }
+                }
+
+                textarea2.value = resultText;
+            }
+        </script>
+    </main>
+
+    <!-- Javascript -->
+    <script src="/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

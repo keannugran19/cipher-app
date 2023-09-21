@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cipher App | Atbash</title>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+
+<body>
+    {{!-- Navbar --}}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary p-4">
+        <div class="container-fluid">
+            <a class="navbar-brand active" href="#">Cipher App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Select Type of Cipher
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/atbash">Atbash Cipher</a></li>
+                            <li><a class="dropdown-item" href="/caesar">Caesar Cipher</a></li>
+                            <li><a class="dropdown-item" href="/vigenere">Vigenere Cipher</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {{!-- End of Navbar --}}
+    <main>
+        <div class="container mt-5">
+            <h1>Atbash Cipher</h1>
+            <div class="row">
+                <div class="col-6">
+                    <div>
+                        <label for="textarea1">Enter your text here:</label>
+                    </div>
+                    <textarea name="textarea1" class="textarea" id="textarea1"></textarea>
+                    <button class="btn btn-primary" type="button" id="encryptBtn"
+                        onclick="atbashCipher('encrypt')">Encrypt</button>
+                    <button class="btn btn-secondary" type="button" id="decryptBtn"
+                        onclick="atbashCipher('decrypt')">Decrypt</button>
+                </div>
+                <div class="col-6">
+                    <div>
+                        <label for="textarea2">Result:</label>
+                    </div>
+                    <textarea name="textarea2" class="textarea" id="textarea2"></textarea>
+                </div>
+            </div>
+        </div>
+        {{!-- Javascript --}}
+        <script>
+            function atbashCipher(action) {
+                const textarea1 = document.getElementById('textarea1');
+                const textarea2 = document.getElementById('textarea2');
+                const inputText = textarea1.value;
+                let resultText = '';
+
+                for (let i = 0; i < inputText.length; i++) {
+                    const char = inputText[i];
+
+                    // Encrypt
+                    if (action === 'encrypt') {
+                        if (/[a-zA-Z]/.test(char)) {
+                            const isLowerCase = char === char.toLowerCase();
+                            const startCode = isLowerCase ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+                            resultText += String.fromCharCode(startCode + 25 - (char.charCodeAt(0) - startCode));
+                        } else {
+                            resultText += char;
+                        }
+                    }
+                    // Decrypt (Same as Encrypt for Atbash Cipher)
+                    else if (action === 'decrypt') {
+                        if (/[a-zA-Z]/.test(char)) {
+                            const isLowerCase = char === char.toLowerCase();
+                            const startCode = isLowerCase ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+                            resultText += String.fromCharCode(startCode + 25 - (char.charCodeAt(0) - startCode));
+                        } else {
+                            resultText += char;
+                        }
+                    }
+                }
+
+                textarea2.value = resultText;
+            }
+        </script>
+        </div>
+        </div>
+    </main>
+
+    <!-- Javascript -->
+    <script src="/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

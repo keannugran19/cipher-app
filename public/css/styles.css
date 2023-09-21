@@ -10,7 +10,6 @@
 /* Login */
 .card {
     margin-top: 8rem;
-    width: 500px;
 }
 
 #loginbtn{
@@ -19,5 +18,12 @@
 
 #register {
     text-decoration: none;
+}
+
+/* textarea */
+.textarea {
+    resize: none;
+    width: 100%;
+    height: 100%;
 }
 
