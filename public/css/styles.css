@@ -19,15 +19,42 @@
 
 /* Login */
 .card {
-    margin-top: 8rem;
+    margin: 6rem auto;
+    width: 450px;
 }
 
 #loginbtn{
-    width: 10rem;
+    width: 100%;
+    color: var(--secondary);
+    background-color: var(--primary);
+    font-size: 18px;
+}
+
+#loginbtn:hover {
+    background-color: var(--secondary);
+    color: var(--text);
 }
 
 #register {
     text-decoration: none;
+    color: var(--accent);
+}
+
+#register:hover {
+    color: var(--secondary);
+}
+
+/* google login button */
+#googleLogin {
+    width: 100%;
+    color: var(--text);
+    background-color: var(--accent);
+    font-size: 18px;
+}
+
+#googleLogin:hover {
+    background-color: var(--secondary);
+    color: var(--text);
 }
 
 /* logout */
@@ -62,7 +89,6 @@
     background-color: var(--secondary);
     color: var(--text);
 }
-
 
 /* home image */
 img {

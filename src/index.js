@@ -3,10 +3,13 @@ const app = express()
 const path = require('path')
 const hbs = require('hbs')
 const collection = require('./mongodb')
+const passport = require('passport')
+const session = require('express-session')
+require('./auth')
 
-// CSS
-app.use(express.static('public'));
-// CSS
+// path
+app.use(express.static('public'))
+// path
 
 const templatePath = path.join(__dirname, '../templates')
 
@@ -19,16 +22,28 @@ app.get('/', (req, res) => {
     res.render('login')
 })
 
+// Google LOGIN
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401)
+}
+
+app.use(session({
+    secret: 'mysecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
+// END of Google LOGIN
+
 app.get('/login', (req, res) => {
     res.render('login')
 })
 
 app.get('/signup', (req, res) => {
     res.render('signup')
-})
-
-app.get('/home', (req, res) => {
-    res.render('home')
 })
 
 app.get('/atbash', (req, res) => {
@@ -95,23 +110,42 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// app.post('/login', async (req, res) => {
+// Google Authorization LOGIN
+app.get('/auth/google',
+    passport.authenticate('google', {
+        scope:
+            ['email', 'profile']
+    }
+    ));
 
-//     try {
-//         const check = await collection.findOne({ username: req.body.username })
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/auth/protected',
+        failureRedirect: '/auth/google/failure'
+    }));
 
-//         if (check.password === req.body.password) {
-//             res.render('home')
-//         } else {
-//             res.send('wrong password')
-//         }
-//     } catch {
+app.get('/auth/google/failure', (req, res) => {
+    res.send('Something went wrong!')
+})
 
-//         res.send('Account not found!')
+app.get('/auth/protected', isLoggedIn, (req, res) => {
+    res.redirect('/home')
+})
 
-//     }
+app.get('/home', isLoggedIn, (req, res) => {
 
-// })
+    const name = req.user.displayName;
+
+    res.render('home', { name: name })
+})
+// END of Google Authorization LOGIN
+
+// Logout from Google
+app.use('/auth/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login')
+})
+
 
 app.listen(3000, () => {
     console.log('port connected');
