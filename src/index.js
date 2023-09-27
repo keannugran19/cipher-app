@@ -7,9 +7,9 @@ const passport = require('passport')
 const session = require('express-session')
 require('./auth')
 
-// CSS
-app.use(express.static('public'));
-// CSS
+// path
+app.use(express.static('public'))
+// path
 
 const templatePath = path.join(__dirname, '../templates')
 
@@ -110,24 +110,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// app.post('/login', async (req, res) => {
-
-//     try {
-//         const check = await collection.findOne({ username: req.body.username })
-
-//         if (check.password === req.body.password) {
-//             res.render('home')
-//         } else {
-//             res.send('wrong password')
-//         }
-//     } catch {
-
-//         res.send('Account not found!')
-
-//     }
-
-// })
-
 // Google Authorization LOGIN
 app.get('/auth/google',
     passport.authenticate('google', {
@@ -156,8 +138,14 @@ app.get('/home', isLoggedIn, (req, res) => {
 
     res.render('home', { name: name })
 })
-
 // END of Google Authorization LOGIN
+
+// Logout from Google
+app.use('/auth/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login')
+})
+
 
 app.listen(3000, () => {
     console.log('port connected');
